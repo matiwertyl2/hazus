@@ -1,0 +1,13 @@
+.navbar-custom {
+    background-color:#abbcc7;
+    color:#ffffff;
+    border-radius:0;
+}
+
+.navbar-custom-social {
+    float: right;
+}
+
+.navbar-custom-social li {
+    border-radius:10%;
+}
