@@ -1,16 +1,23 @@
-var express = require("express"),
-    path = require('path');
+var express = require("express")
+    , path = require('path')
+    , logger = require('morgan')
+    , mongo = require('./config/mongo.js');
 
+mongo.init();
 
 var app = express();
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+app.use(logger('dev'));
+
+
 var home = require('./routes/home'),
     experience = require('./routes/experience'),
     education = require('./routes/education'),
-    projects = require('./routes/projects');
+    projects = require('./routes/projects'),
+    upload = require('./routes/upload');
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -18,5 +25,6 @@ app.use('/', home);
 app.use('/experience', experience);
 app.use('/education', education);
 app.use('/projects', projects);
+app.use('/upload', upload);
 
 module.exports = app;

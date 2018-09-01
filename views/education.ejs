@@ -2,3 +2,7 @@
 <%- include('partials/menu.ejs') %>
 
 Education
+
+<% if (locals.content) { %>
+    <%- content %>  
+<% } %>
