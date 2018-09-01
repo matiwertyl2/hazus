@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/matiwertyl2/hazus#readme",
   "dependencies": {
+    "body-parser": "^1.18.3",
     "ejs": "^2.6.1",
     "express": "^4.16.3",
     "fs-extra": "^7.0.0",

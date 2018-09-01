@@ -55,14 +55,12 @@
     $('#send-page').on('submit', e => {
         e.preventDefault();
 
-        var data = new FormData();
-
         var name = $('#send-page :input[name="pageName"]')[0];
-        data.append('name', name.value);
 
         fetch('/upload/page', {
             method : 'post',
-            body : data
+            headers: { 'Content-Type': 'application/json' },
+            body : JSON.stringify({name : name.value})
         })
         .then(response => response.json())
         .then(response => {
@@ -120,5 +118,4 @@
                 .catch(console.error);
         
     });
-
 </script>

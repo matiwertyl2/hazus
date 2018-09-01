@@ -3,14 +3,14 @@ const Page = require('../models/Page');
 
 function savePagePromise(name)
 {
-    console.log("saving page");
+    console.log("saving page " + name);
 
     return new Promise((res, rej) =>{
         var page = new Page({
             name: name
         });
 
-        Page.save((err) => {
+        page.save((err) => {
             if (err) rej(err);
             res(page);
         })
@@ -71,7 +71,7 @@ function getPageContentPromise(contentName)
 }
 
 module.exports = {
-    savePageContentPromise : savePagePromise,
+    savePagePromise : savePagePromise,
     savePageContentPromise : savePageContentPromise,
     getPagePromise : getPagePromise,
     getAllPagesPromise : getAllPagesPromise,

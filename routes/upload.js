@@ -11,7 +11,6 @@ router.get('/', function(req, res, next){
 });
 
 router.post('/', upload.fields([{name: 'archive', maxCount: 1}]), (req, res) => {
-        
     var archivePath = req.files.archive[0].path;
     processArchive(archivePath)
     .then(
@@ -23,6 +22,14 @@ router.post('/', upload.fields([{name: 'archive', maxCount: 1}]), (req, res) => 
             res.send(JSON.stringify(pageContent));          
         })
     }).catch(console.error);
+});
+
+router.post('/page', (req, res) => {
+    metadataStore.savePagePromise(req.body.name)
+    .then(page => {
+        res.send(JSON.stringify(page));
+    }).catch(console.error);
+
 });
 
 

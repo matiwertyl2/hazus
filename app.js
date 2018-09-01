@@ -1,7 +1,8 @@
 var express = require("express")
     , path = require('path')
     , logger = require('morgan')
-    , mongo = require('./config/mongo.js');
+    , mongo = require('./config/mongo.js')
+    , bodyParser = require('body-parser');
 
 mongo.init();
 
@@ -11,6 +12,8 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 app.use(logger('dev'));
+app.use(bodyParser.json());
+
 
 
 var home = require('./routes/home'),
