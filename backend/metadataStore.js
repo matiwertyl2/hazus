@@ -19,7 +19,7 @@ function savePagePromise(name)
 
 function savePageContentPromise(path, name)
 {
-    console.log("saving page content");
+    console.log("saving page content " + name);
 
     return new Promise((res, rej) => {
         var pageContent = new PageContent({

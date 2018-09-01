@@ -30,3 +30,8 @@
     text-align: right;
     top: 0;
 }
+
+.page-container {
+    margin-left: 5%;
+    margin-right: 5%;
+}

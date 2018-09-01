@@ -1,36 +1,51 @@
 <%- include('partials/head.ejs', { title: 'Upload' }) %>
 <%- include('partials/menu.ejs') %>
 
-<script src="/ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+<script src="/ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script> 
+  
+<div class="page-container">
+    <div class="well">
+        <form id="send-page-content" method="post" enctype="multipart/form-data">
 
-<form id="send-page-content" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label>Page Name</label>
+                <select id="pageName" class="form-control">
+                        <% for (var page of pages) { %>
+                            <option value="<%=page.name%>"><%=page.name%></option>
+                        <% } %>            
+                </select>
+            </div>
 
-    <div class="form-group">
-        <label>Name</label>
-        <input type="text" class="form-control" name="pageContentName">
+            <div class="form-group">
+                <label>Content Name</label>
+                <input type="text" class="form-control" name="pageContentName">
+            </div>
+
+            <div class="form-group">
+                    <label>Archive</label><br>
+                    <label class="fileContainer">
+                            <button class="btn btn-primary">Choose archive</button>
+                            <input type="file" name="pageArchive"/>
+                        </label>
+            </div>
+            <center>
+            <input class="btn btn-primary" id="upload" type="submit" value="Upload">
+            </center>
+        </form>
     </div>
 
-    <div class="form-group">
-            <label>Archive</label><br>
-            <label class="fileContainer">
-                    <button class="btn btn-primary">Choose archive</button>
-                    <input type="file" name="pageArchive"/>
-                </label>
+    <div class="well">
+        <form id="send-page" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" class="form-control" name="pageName">
+            </div>
+            <center>
+                <input class="btn btn-primary" id="pageUpload" type="submit" value="Upload">
+            </center>
+        </form>
     </div>
-    <center>
-    <input class="btn btn-primary" id="upload" type="submit" value="Upload">
-    </center>
-</form>
-
-<form id="send-page" method="post" enctype="multipart/form-data">
-    <div class="form-group">
-        <label>Name</label>
-        <input type="text" class="form-control" name="pageName">
-    </div>
-    <center>
-        <input class="btn btn-primary" id="pageUpload" type="submit" value="Upload">
-    </center>
-</form>
+</div>
 
 <!-- Modal - displaying messages -->
 <div class="modal fade" id="modal-message" role="dialog">
@@ -89,7 +104,7 @@
         var archiveFile = $('#send-page-content :input[name="pageArchive"]')[0];
         data.append('archive', archiveFile.files[0]);
 
-        var name = $('#send-page-content :input[name="pageContentName"]')[0];
+        var name =  document.getElementById('pageName');
         data.append('name', name.value);
 
             fetch('/upload', {

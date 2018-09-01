@@ -7,7 +7,15 @@ const metadataStore = require('../backend/metadataStore');
 
 
 router.get('/', function(req, res, next){
-    res.render('upload.ejs');
+    metadataStore.getAllPagesPromise()
+    .then(pages => {
+        for (var page of pages)
+        {
+            console.log(page);
+        }
+        res.render('upload.ejs', {pages : pages});
+    })
+    .catch(console.error);
 });
 
 router.post('/', upload.fields([{name: 'archive', maxCount: 1}]), (req, res) => {
