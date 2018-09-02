@@ -1,20 +1,25 @@
-<%- include('partials/head.ejs', { title: 'Education' }) %>
+<%- include('partials/head.ejs', { title: pageName }) %>
 <%- include('partials/menu.ejs', {pages : pages}) %>
 
-<%=pageName %>
+<div class="page-container">
+    <center>
+        <h3><%=pageName %></h3>
+    </center>
 
-<% if (locals.contents) {
-    for (var content of contents) { %>
-            <%-content %>
-            <html>
-                <head>
-                    <base href='http://localhost:3000/page/<%=pageName%>/<%=content%>/'>
-                </head>
-                <body>
-                    
-                    <iframe id="<%=content%>" src="/page/<%=pageName%>/<%=content%>/"></iframe>
-                </body>
-            </html>
-<%  }
-   } %>
-
+    <% if (locals.contents) {
+        for (var content of contents) { %>
+                <html>
+                    <head>
+                        <base href='http://localhost:3000/page/<%=pageName%>/<%=content.name%>/'>
+                    </head>
+                    <body>
+                        <div class="well">
+                            <h4><%-content.name %></h4>
+                            <hr>
+                            <%-content.body%>
+                        </div>
+                    </body>
+                </html>
+    <%  }
+    } %>
+</div>

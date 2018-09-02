@@ -13,8 +13,8 @@ router.get('/:name', function(req, res, next){
         var contents = [];
         for (var pageContent of pageContents) {
             var pagePath = path.join(pageContent.pageContentDirectory, "page.html");
-            var content = fs.readFileSync(pagePath).toString();
-            contents.push(pageContent.name);
+            var body = fs.readFileSync(pagePath).toString();
+            contents.push({name : pageContent.name, body : body});
         }     
         metadataStore.getAllPagesPromise()
         .then(pages => {
