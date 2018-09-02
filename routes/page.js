@@ -35,9 +35,7 @@ router.get('/:name/:content', function(req, res, next) {
         console.log(content);
         var pagePath = path.join(pageContent.pageContentDirectory, "page.html");
         var content = fs.readFileSync(pagePath).toString();
-      res.render('pageContent.ejs', {
-          content : content
-      })
+        res.send(JSON.stringify({content : content}));
     })
     .catch(console.error);
 });

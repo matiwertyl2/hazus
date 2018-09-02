@@ -9,12 +9,16 @@ const metadataStore = require('../backend/metadataStore');
 router.get('/', function(req, res, next){
     metadataStore.getAllPagesPromise()
     .then(pages => {
-        console.log("pages ", pages);
-        for (var page of pages)
-        {
-            console.log(page);
-        }
-        res.render('upload.ejs', {pages : pages});
+        metadataStore.getAllPageContentsPromise()
+        .then(pageContents => {
+            pageContents = pageContents.sort((a, b) => {
+                if (a.pageName < b.pageName) return -1;
+                if (a.pageName > b.pageName) return 1;
+                return a.name < b.name;
+            });
+            console.log(pageContents);
+            res.render('upload.ejs', {pages : pages, pageContents : pageContents});
+        });
     })
     .catch(console.error);
 });

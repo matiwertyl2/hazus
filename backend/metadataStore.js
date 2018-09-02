@@ -83,11 +83,24 @@ function getPageContentsPromise(pageName)
     });
 }
 
+function getAllPageContentsPromise()
+{
+    console.log("loading all pages content")
+    
+    return new Promise((res, rej) => {
+        PageContent.find({}, (err, pageContents) => {
+            if (err) rej(err);
+            res(pageContents);
+        });
+    });
+}
+
 module.exports = {
     savePagePromise : savePagePromise,
     savePageContentPromise : savePageContentPromise,
     getPagePromise : getPagePromise,
     getAllPagesPromise : getAllPagesPromise,
     getPageContentPromise : getPageContentPromise,
-    getPageContentsPromise : getPageContentsPromise 
+    getPageContentsPromise : getPageContentsPromise,
+    getAllPageContentsPromise : getAllPageContentsPromise
 }
