@@ -1,14 +1,18 @@
 <nav class="navbar navbar-custom">
     <div class="navbar-left">
-            <a href="/"><img src="img/logo_hazus.png"></a>
+            <a href="/"><img src="/img/logo_hazus.png"></a>
             Mateusz Hazy
     </div>
     <div class="navbar-default">
         <ul class="nav navbar-nav">
             <li><a href="/">Home</a></li>
-            <li><a href="/education">Education</a></li>
-            <li><a href="/experience">Experience</a></li>
-            <li><a href="/projects">Projects</a></li>
+            <% for (var page of pages) { %>
+                <li>
+                    <a href="/page/<%=page.name%>/">
+                        <%=page.name%>
+                    </a>
+                </li>
+            <% } %>
         </ul>
     </div>
     <div class="navbar-custom-social">

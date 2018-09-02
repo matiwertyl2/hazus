@@ -17,17 +17,13 @@ app.use(bodyParser.json());
 
 
 var home = require('./routes/home'),
-    experience = require('./routes/experience'),
-    education = require('./routes/education'),
-    projects = require('./routes/projects'),
+    page = require('./routes/page'),
     upload = require('./routes/upload');
 
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', home);
-app.use('/experience', experience);
-app.use('/education', education);
-app.use('/projects', projects);
+app.use('/page', page);
 app.use('/upload', upload);
 
 module.exports = app;

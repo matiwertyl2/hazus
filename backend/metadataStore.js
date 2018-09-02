@@ -17,14 +17,15 @@ function savePagePromise(name)
     });
 }
 
-function savePageContentPromise(path, name)
+function savePageContentPromise(path, pageName, name)
 {
-    console.log("saving page content " + name);
+    console.log("saving page content " + name + "of page " + pageName);
 
     return new Promise((res, rej) => {
         var pageContent = new PageContent({
             pageContentDirectory : path,
-            name : name
+            name : name,
+            pageName : pageName
         });
 
         pageContent.save((err) => {
@@ -70,10 +71,23 @@ function getPageContentPromise(contentName)
     });
 }
 
+function getPageContentsPromise(pageName)
+{
+    console.log("loading page ", pageName, "contents");
+
+    return new Promise((res, rej) => {
+        PageContent.find({pageName : pageName}, (err, pageContents) => {
+            if (err) rej(err);
+            res(pageContents);
+        });
+    });
+}
+
 module.exports = {
     savePagePromise : savePagePromise,
     savePageContentPromise : savePageContentPromise,
     getPagePromise : getPagePromise,
     getAllPagesPromise : getAllPagesPromise,
-    getPageContentPromise : getPageContentPromise   
+    getPageContentPromise : getPageContentPromise,
+    getPageContentsPromise : getPageContentsPromise 
 }

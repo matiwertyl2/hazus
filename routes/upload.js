@@ -9,6 +9,7 @@ const metadataStore = require('../backend/metadataStore');
 router.get('/', function(req, res, next){
     metadataStore.getAllPagesPromise()
     .then(pages => {
+        console.log("pages ", pages);
         for (var page of pages)
         {
             console.log(page);
@@ -23,7 +24,10 @@ router.post('/', upload.fields([{name: 'archive', maxCount: 1}]), (req, res) => 
     processArchive(archivePath)
     .then(
     (sub) => {
-        metadataStore.savePageContentPromise(sub.pageContentDirectory, req.body.name)
+        metadataStore.savePageContentPromise(
+            sub.pageContentDirectory, 
+            req.body.pageName, 
+            req.body.name)
         .then(
         (pageContent) => {
             console.log(JSON.stringify(pageContent));

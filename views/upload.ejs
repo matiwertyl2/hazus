@@ -1,8 +1,8 @@
 <%- include('partials/head.ejs', { title: 'Upload' }) %>
-<%- include('partials/menu.ejs') %>
+<%- include('partials/menu.ejs', {pages : pages}) %>
 
 <script src="/ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script> 
-  
+
 <div class="page-container">
     <div class="well">
         <form id="send-page-content" method="post" enctype="multipart/form-data">
@@ -104,7 +104,10 @@
         var archiveFile = $('#send-page-content :input[name="pageArchive"]')[0];
         data.append('archive', archiveFile.files[0]);
 
-        var name =  document.getElementById('pageName');
+        var pageName =  document.getElementById('pageName');
+        data.append('pageName', pageName.value);
+
+        var name = $('#send-page-content :input[name="pageContentName"]')[0];
         data.append('name', name.value);
 
             fetch('/upload', {

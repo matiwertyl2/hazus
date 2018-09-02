@@ -1,0 +1,11 @@
+<%- include('partials/head.ejs', { title: 'Education' }) %>
+<%- include('partials/menu.ejs', {pages : pages}) %>
+
+<%=pageName %>
+
+<% if (locals.contents) {
+    for (var content of contents) { %>
+            <%-content %>
+    
+<%  }
+   } %>
