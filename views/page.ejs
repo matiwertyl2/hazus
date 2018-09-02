@@ -6,6 +6,15 @@
 <% if (locals.contents) {
     for (var content of contents) { %>
             <%-content %>
-    
+            <html>
+                <head>
+                    <base href='http://localhost:3000/page/<%=pageName%>/<%=content%>/'>
+                </head>
+                <body>
+                    
+                    <iframe id="<%=content%>" src="/page/<%=pageName%>/<%=content%>/"></iframe>
+                </body>
+            </html>
 <%  }
    } %>
+

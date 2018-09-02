@@ -59,12 +59,12 @@ function getAllPagesPromise()
     });
 }
 
-function getPageContentPromise(contentName)
+function getPageContentPromise(contentName, pageName)
 {
     console.log("loading page content");
 
     return new Promise((res, rej) => {
-        PageContent.findOne({name : contentName}, (err, pageContent) => {
+        PageContent.findOne({name : contentName, pageName : pageName}, (err, pageContent) => {
             if (err) rej(err);
             res(pageContent);
         });

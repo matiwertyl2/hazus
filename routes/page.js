@@ -14,7 +14,7 @@ router.get('/:name', function(req, res, next){
         for (var pageContent of pageContents) {
             var pagePath = path.join(pageContent.pageContentDirectory, "page.html");
             var content = fs.readFileSync(pagePath).toString();
-            contents.push(content);
+            contents.push(pageContent.name);
         }     
         metadataStore.getAllPagesPromise()
         .then(pages => {
@@ -28,10 +28,23 @@ router.get('/:name', function(req, res, next){
     .catch(console.error);
 });
 
+router.get('/:name/:content', function(req, res, next) {
+    console.log("get page content ", req.params);
+    metadataStore.getPageContentPromise(req.params.content, req.params.name)
+    .then(pageContent => {
+        console.log(content);
+        var pagePath = path.join(pageContent.pageContentDirectory, "page.html");
+        var content = fs.readFileSync(pagePath).toString();
+      res.render('pageContent.ejs', {
+          content : content
+      })
+    })
+    .catch(console.error);
+});
 
-router.get('/:name/:resource', function(req, res, next){
-    console.log("loading resource ", req.params.resource, "of page ", req.params.name);
-    metadataStore.getPageContentPromise(req.params.name)
+router.get('/:name/:content/:resource', function(req, res, next){
+    console.log("loading resource ", req.params.resource, "of page ", req.params.content);
+    metadataStore.getPageContentPromise(req.params.content, req.params.name)
     .then(
     (pageContent) =>{
         var resourcePath = path.join(pageContent.pageContentDirectory, req.params.resource);
