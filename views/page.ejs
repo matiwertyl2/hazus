@@ -1,6 +1,8 @@
 <%- include('partials/head.ejs', { title: pageName }) %>
 <%- include('partials/menu.ejs', {pages : pages}) %>
-
+<head>
+       <base href='http://localhost:3000/page/<%=pageName%>'>
+</head>
 <div class="page-container">
     <center>
         <h3><%=pageName %></h3>
@@ -9,8 +11,11 @@
     <% if (locals.contents) {
         for (var content of contents) { %>
                 <html>
-                    <head>
-                        <base href='http://localhost:3000/page/<%=pageName%>/<%=content.name%>/'>
+                    <head>                      
+                        <script>
+                            document.getElementsByTagName("base")[0]
+                            .href='http://localhost:3000/page/<%=pageName%>/<%=content.name%>/';
+                        </script>
                     </head>
                     <body>
                         <div class="well">
