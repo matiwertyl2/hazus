@@ -1,0 +1,42 @@
+<%- include('uploadModal.ejs') %>
+
+<center><h3>Upload page</h3></center>
+
+<form id="send-page" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label>Name</label>
+        <input type="text" class="form-control" name="pageName">
+    </div>
+    <center>
+        <input class="btn btn-primary" id="pageUpload" type="submit" value="Upload">
+    </center>
+</form>
+
+<script>
+        $('#send-page').on('submit', e => {
+            e.preventDefault();
+    
+            var name = $('#send-page :input[name="pageName"]')[0];
+    
+            fetch('/upload/page', {
+                method : 'post',
+                headers: { 'Content-Type': 'application/json' },
+                body : JSON.stringify({name : name.value})
+            })
+            .then(response => response.json())
+            .then(response => {
+                if(response.err) {
+                    $('#modal-message .modal-title').text("Error");
+                    $('#modal-message .modal-body').text(response.err);
+                    $('#modal-message').modal();
+                }
+                else {
+                    document.getElementById("send-page").reset();
+                    $('#modal-message .modal-title').text("Success");
+                    $('#modal-message .modal-body').text("Congratulations, page successfully uploaded");
+                    $('#modal-message').modal();
+                }
+            })
+            .catch(console.error);
+        });
+    </script>

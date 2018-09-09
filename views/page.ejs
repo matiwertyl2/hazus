@@ -3,131 +3,40 @@
 <head>
        <base href='http://localhost:3000/page/<%=pageName%>'>
 </head>
-<div class="page-container">
+<div class="page-container" id="container">
     <center>
         <h3><%=pageName %></h3>
     </center>
 
-    <% if (locals.contents) {
-        for (var content of contents) { %>
-                <html>
-                    <head>                      
-                        <script>
-                            document.getElementsByTagName("base")[0]
-                            .href='http://localhost:3000/page/<%=pageName%>/<%=content.name%>/';
-                        </script>
-                    </head>
-                    <body>
-                        <div class="well">
-                            <h4><%-content.name %></h4>
-                            <hr>
-                            <%-content.body%>
-                        </div>
-                    </body>
-                </html>
-    <%  }
-    } %>
-
-
-<center>
-    <ul id="columns">
-        <li class="column" draggable="true"><header>A</header></li>
-        <li class="column" draggable="true"><header>B</header></li>
-        <li class="column" draggable="true"><header>C</header></li>
-        <li class="column" draggable="true"><header>D</header></li>
-        <li class="column" draggable="true"><header>E</header></li>
-    </ul>
-</center>
+   
 </div>
 
-
-  <script>
-      var dragSrcEl = null;
-
-function handleDragStart(e) {
-  // Target (this) element is the source node.
-  dragSrcEl = this;
-
-  e.dataTransfer.effectAllowed = 'move';
-  e.dataTransfer.setData('text/html', this.outerHTML);
-
-  this.classList.add('dragElem');
-}
-function handleDragOver(e) {
-  if (e.preventDefault) {
-    e.preventDefault(); // Necessary. Allows us to drop.
-  }
-  this.classList.add('over');
-
-  e.dataTransfer.dropEffect = 'move';  // See the section on the DataTransfer object.
-
-  return false;
-}
-
-function handleDragEnter(e) {
-  // this / e.target is the current hover target.
-}
-
-function handleDragLeave(e) {
-  this.classList.remove('over');  // this / e.target is previous target element.
-}
-
-function handleDrop(e) {
-  // this/e.target is current target element.
-
-  if (e.stopPropagation) {
-    e.stopPropagation(); // Stops some browsers from redirecting.
-  }
-
-  // Don't do anything if dropping the same column we're dragging.
-  if (dragSrcEl != this) {
-    // Set the source column's HTML to the HTML of the column we dropped on.
-    //alert(this.outerHTML);
-    //dragSrcEl.innerHTML = this.innerHTML;
-    //this.innerHTML = e.dataTransfer.getData('text/html');
-    this.parentNode.removeChild(dragSrcEl);
-    var dropHTML = e.dataTransfer.getData('text/html');
-    this.insertAdjacentHTML('beforebegin',dropHTML);
-    var dropElem = this.previousSibling;
-    addDnDHandlers(dropElem);
-    
-  }
-  else {
-      this.classList.remove('dragElem');
-  }
-  this.classList.remove('over');
-  return false;
-}
-
-function handleDragEnd(e) {
-  // this/e.target is the source node.
-  this.classList.remove('dragElem');
-  this.classList.remove('over');
-}
-
-function addDnDHandlers(elem) {
-  elem.addEventListener('dragstart', handleDragStart, false);
-  elem.addEventListener('dragenter', handleDragEnter, false)
-  elem.addEventListener('dragover', handleDragOver, false);
-  elem.addEventListener('dragleave', handleDragLeave, false);
-  elem.addEventListener('drop', handleDrop, false);
-  elem.addEventListener('dragend', handleDragEnd, false);
-
-}
-
-var cols = document.querySelectorAll('#columns .column');
-[].forEach.call(cols, addDnDHandlers);
-  </script>
-
-
-<button id="test_btn">Click</button>
-
+<% var contents = JSON.stringify(contents) %>
+<% var pageName = pageName %>
 
 <script>
-    $('#test_btn').on('click', e => {
-        names = [];
-        var x = document.getElementById("columns").getElementsByTagName("li");
-        for (var y of x) names.push(y.getElementsByTagName("header")[0].innerText);
-        console.log(names);
-    });
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    (async function() {
+        var contents = <%- contents %>;
+        var pageName = "<%= pageName %>";
+        for (var content of contents) {
+            var base = `http://localhost:3000/page/${pageName}/${content.name}/`
+            document.getElementsByTagName("base")[0].href= base;
+
+            var wellDiv = document.createElement('div');
+            
+            wellDiv.className = "well";
+            wellDiv.innerHTML = `<center><h2>${content.name}</h2></center> <br>` + content.body;
+
+            var container = document.getElementById("container");
+            container.appendChild(wellDiv);
+            // seems that it solves concurency issues with changing base
+            // without that further contents may change the base before previous request for all
+            // embedded reseources
+            await sleep(0);
+        }
+    })();
 </script>

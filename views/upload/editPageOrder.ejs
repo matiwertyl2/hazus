@@ -1,0 +1,157 @@
+<%- include('uploadModal.ejs') %>
+
+<center><h3>Edit Page contents ordering</h3></center>
+
+<select id="page-edit-select" class="form-control">
+        <option value="" disabled selected>Select page to edit</option>
+        <% for (var page of pages) { %>
+            <option value="<%=page.name%>"><%=page.name%></option>
+        <% } %>            
+</select>
+
+<center>
+        <ul id="columns">
+        </ul>
+</center>
+   
+<script>
+        var dragSrcEl = null;
+  
+  function handleDragStart(e) {
+    // Target (this) element is the source node.
+    dragSrcEl = this;
+  
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', this.outerHTML);
+  
+    this.classList.add('dragElem');
+  }
+  function handleDragOver(e) {
+    if (e.preventDefault) {
+      e.preventDefault(); // Necessary. Allows us to drop.
+    }
+    this.classList.add('over');
+  
+    e.dataTransfer.dropEffect = 'move';  // See the section on the DataTransfer object.
+  
+    return false;
+  }
+  
+  function handleDragEnter(e) {
+    // this / e.target is the current hover target.
+  }
+  
+  function handleDragLeave(e) {
+    this.classList.remove('over');  // this / e.target is previous target element.
+  }
+  
+  function handleDrop(e) {
+    // this/e.target is current target element.
+  
+    if (e.stopPropagation) {
+      e.stopPropagation(); // Stops some browsers from redirecting.
+    }
+  
+    // Don't do anything if dropping the same column we're dragging.
+    if (dragSrcEl != this) {
+      // Set the source column's HTML to the HTML of the column we dropped on.
+      //alert(this.outerHTML);
+      //dragSrcEl.innerHTML = this.innerHTML;
+      //this.innerHTML = e.dataTransfer.getData('text/html');
+      this.parentNode.removeChild(dragSrcEl);
+      var dropHTML = e.dataTransfer.getData('text/html');
+      this.insertAdjacentHTML('beforebegin',dropHTML);
+      var dropElem = this.previousSibling;
+      addDnDHandlers(dropElem);
+      
+    }
+    else {
+        this.classList.remove('dragElem');
+    }
+    this.classList.remove('over');
+    return false;
+  }
+  
+  function handleDragEnd(e) {
+    // this/e.target is the source node.
+    this.classList.remove('dragElem');
+    this.classList.remove('over');
+  }
+  
+  function addDnDHandlers(elem) {
+    elem.addEventListener('dragstart', handleDragStart, false);
+    elem.addEventListener('dragenter', handleDragEnter, false)
+    elem.addEventListener('dragover', handleDragOver, false);
+    elem.addEventListener('dragleave', handleDragLeave, false);
+    elem.addEventListener('drop', handleDrop, false);
+    elem.addEventListener('dragend', handleDragEnd, false);
+  
+  }
+  
+    </script>
+  
+
+<script>
+        $('#page-edit-select').on('change', e => {
+            var pageName = document.getElementById("page-edit-select").value;
+            fetch('/update/' + pageName, {
+                method : 'get'
+            })
+            .then(response => response.json())
+            .then(response => {
+                console.log(response);
+                var list = document.getElementById("columns");
+                var listElems = list.getElementsByTagName("li");
+                while (listElems.length > 0) {
+                    list.removeChild(listElems[0]);
+                }
+                console.log(response.contents);
+                for (content of response.contents) {
+                    var newItem = document.createElement('li');
+                    newItem.className = "column";
+                    newItem.draggable = "true";
+                    var itemHeader = document.createElement('header');
+                    var itemText = document.createTextNode(content.name);
+                    itemHeader.appendChild(itemText);
+                    newItem.appendChild(itemHeader);
+                    addDnDHandlers(newItem);
+                    list.appendChild(newItem);
+                }
+            })
+            .catch(console.error);
+        });
+</script>
+
+    
+<center>
+        <input class="btn btn-primary" id="submit-order-button" value="Submit changes">
+</center>  
+    
+    <script>
+        $('#submit-order-button').on('click', e => {
+            names = [];
+            var pageContents = document.getElementById("columns").getElementsByTagName("li");
+            for (var pageContent of pageContents) names.push(pageContent.getElementsByTagName("header")[0].innerText);
+            var page = document.getElementById("page-edit-select").value;
+            fetch('/update/' + page, {
+                method: 'post',
+                headers: { 'Content-Type': 'application/json'},
+                body : JSON.stringify({names : names})
+            })
+            .then(response => response.json())
+            .then(response => {
+                if(response.err) {
+                    $('#modal-message .modal-title').text("Error");
+                    $('#modal-message .modal-body').text(response.err);
+                    $('#modal-message').modal();
+                }
+                else {
+                    document.getElementById("send-page").reset();
+                    $('#modal-message .modal-title').text("Success");
+                    $('#modal-message .modal-body').text("Congratulations, content ordering successfully updated");
+                    $('#modal-message').modal();
+                }
+            })
+            .catch(console.error);
+        });
+    </script>

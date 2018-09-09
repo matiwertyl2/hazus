@@ -17,4 +17,23 @@ router.post('/:pageName/:contentName', (req, res, next) => {
     .catch(console.error);
 });
 
+router.get('/:pageName', (req, res, next) => {
+    metadataStore.getPageContentsPromise(req.params.pageName)
+    .then(contents => {
+        var sortedContents = contents.sort((a, b) => {
+            return a.rank > b.rank;
+        });
+        res.send(JSON.stringify({contents : sortedContents}));
+    })
+    .catch(console.error);
+});
+
+router.post('/:pageName', (req, res, next) => {
+    console.log(req.body);
+    metadataStore.updateAllPageContensRanks(req.params.pageName, req.body.names)
+    .then(result => {
+        res.send(JSON.stringify(result));
+    })
+});
+
 module.exports = router;

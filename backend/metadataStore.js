@@ -13,10 +13,12 @@ function savePagePromise(name)
         getPagePromise(name)
         .then(existingPage => {
             if (existingPage) rej({err: "Given page already exists"});
-            page.save((err) => {
-                if (err) rej(err);
-                res(page);
-            })
+            else {
+                page.save((err) => {
+                    if (err) rej(err);
+                    res(page);
+                })
+            }          
         })
         .catch(console.error);
     });
@@ -40,7 +42,7 @@ function savePageContentPromise(path, pageName, name)
                     pageContentDirectory : path,
                     name : name,
                     pageName : pageName,
-                    rank: contents.length + 1
+                    rank: contents.length
                 });
 
                 pageContent.save((err) => {
@@ -79,7 +81,7 @@ function getAllPagesPromise()
 
 function getPageContentPromise(contentName, pageName)
 {
-    console.log("loading page content");
+    console.log("loading page content ",  contentName);
 
     return new Promise((res, rej) => {
         PageContent.findOne({name : contentName, pageName : pageName}, (err, pageContent) => {
@@ -113,6 +115,35 @@ function getAllPageContentsPromise()
     });
 }
 
+function updatePageContentRankPromise(pageName, contentName, rank)
+{
+    console.log("updating rank of content ", contentName, " of page ", pageName);
+
+    return new Promise((res, rej) => {
+        PageContent.findOneAndUpdate({
+            name : contentName, 
+            pageName : pageName},
+            {rank : rank},
+            (err, doc, updatedContent) => {
+                if (err) rej(err);
+                res(updatedContent);
+        });
+    });
+}
+
+async function updateAllPageContensRanks(pageName, contents) {
+    console.log("updating ranks");
+    for (var rank = 0; rank < contents.length; rank++) {
+        try {
+            await updatePageContentRankPromise(pageName, contents[rank], rank);
+        }
+        catch(err) {
+            return err;
+        }
+    }
+    return {success : true};
+}
+
 module.exports = {
     savePagePromise : savePagePromise,
     savePageContentPromise : savePageContentPromise,
@@ -120,5 +151,7 @@ module.exports = {
     getAllPagesPromise : getAllPagesPromise,
     getPageContentPromise : getPageContentPromise,
     getPageContentsPromise : getPageContentsPromise,
-    getAllPageContentsPromise : getAllPageContentsPromise
+    getAllPageContentsPromise : getAllPageContentsPromise,
+    updatePageContentRankPromise : updatePageContentRankPromise,
+    updateAllPageContensRanks : updateAllPageContensRanks
 }

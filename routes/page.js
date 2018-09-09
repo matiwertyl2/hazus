@@ -9,7 +9,9 @@ router.get('/:name', function(req, res, next){
     metadataStore.getPageContentsPromise(req.params.name)
     .then(
     (pageContents) => {
-        console.log(pageContents);
+        pageContents = pageContents.sort((a, b) => {
+            return a.rank > b.rank;
+        });
         var contents = [];
         for (var pageContent of pageContents) {
             var pagePath = path.join(pageContent.pageContentDirectory, "page.html");
@@ -32,7 +34,6 @@ router.get('/:name/:content', function(req, res, next) {
     console.log("get page content ", req.params);
     metadataStore.getPageContentPromise(req.params.content, req.params.name)
     .then(pageContent => {
-        console.log(content);
         var pagePath = path.join(pageContent.pageContentDirectory, "page.html");
         var content = fs.readFileSync(pagePath).toString();
         res.send(JSON.stringify({content : content}));
@@ -41,7 +42,8 @@ router.get('/:name/:content', function(req, res, next) {
 });
 
 router.get('/:name/:content/:resource', function(req, res, next){
-    console.log("loading resource ", req.params.resource, "of page ", req.params.content);
+    console.log("getting resource ", req.params.resource, "of ", 
+        req.params.content, " ", req.params.name);
     metadataStore.getPageContentPromise(req.params.content, req.params.name)
     .then(
     (pageContent) =>{

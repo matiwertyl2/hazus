@@ -17,7 +17,7 @@ router.get('/', function(req, res, next){
                 return a.name < b.name;
             });
             console.log(pageContents);
-            res.render('upload.ejs', {pages : pages, pageContents : pageContents});
+            res.render('upload/upload.ejs', {pages : pages, pageContents : pageContents});
         });
     })
     .catch(console.error);
