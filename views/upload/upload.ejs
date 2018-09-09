@@ -4,13 +4,14 @@
 <script src="/ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script> 
 
 <div class="page-container">
-    <div class="well">
-       <%- include('uploadPageContent.ejs', {pages : pages}) %>
-    </div>
-
+  
     <div class="well">
        <%- include('uploadPage.ejs') %>
     </div>
+
+    <div class="well">
+            <%- include('uploadPageContent.ejs', {pages : pages}) %>
+         </div>
 
     <div class="well">
         <%- include('editPageContent.ejs', {pageContents : pageContents}) %>   
