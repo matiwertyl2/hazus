@@ -11,8 +11,8 @@ function savePagePromise(name)
         });
 
         getPagePromise(name)
-        .then(page => {
-            if (page) rej({err: "Given page already exists"});
+        .then(existingPage => {
+            if (existingPage) rej({err: "Given page already exists"});
             page.save((err) => {
                 if (err) rej(err);
                 res(page);
@@ -27,20 +27,27 @@ function savePageContentPromise(path, pageName, name)
     console.log("saving page content " + name + "of page " + pageName);
 
     return new Promise((res, rej) => {
-        var pageContent = new PageContent({
-            pageContentDirectory : path,
-            name : name,
-            pageName : pageName
-        });
 
         getPageContentPromise(name, pageName)
         .then(content => {
+
             if (content) rej({err: "Given content already exists"});
 
-            pageContent.save((err) => {
-                if (err) rej(err);
-                res(pageContent);
-            });
+            getPageContentsPromise(pageName)
+            .then(contents => {
+                
+                var pageContent = new PageContent({
+                    pageContentDirectory : path,
+                    name : name,
+                    pageName : pageName,
+                    rank: contents.length + 1
+                });
+
+                pageContent.save((err) => {
+                    if (err) rej(err);
+                    res(pageContent);
+                });
+            });          
         })
         .catch(console.error);  
     });
