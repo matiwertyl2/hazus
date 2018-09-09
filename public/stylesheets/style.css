@@ -48,10 +48,11 @@
   
   #columns {
     list-style-type: none;
+    padding: 0;
   }
   
   .column {
-    width: 162px;
+    width: 100%;
     padding-bottom: 5px;
     padding-top: 5px;
     text-align: center;
@@ -59,7 +60,7 @@
   }
   .column header {
     height: 40px;
-    width: 150px;
+    flex-grow: 1;
     color: black;
     background-color: #ccc;
     padding: 5px;
