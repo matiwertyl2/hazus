@@ -10,10 +10,15 @@ function savePagePromise(name)
             name: name
         });
 
-        page.save((err) => {
-            if (err) rej(err);
-            res(page);
+        getPagePromise(name)
+        .then(page => {
+            if (page) rej({err: "Given page already exists"});
+            page.save((err) => {
+                if (err) rej(err);
+                res(page);
+            })
         })
+        .catch(console.error);
     });
 }
 
@@ -28,10 +33,16 @@ function savePageContentPromise(path, pageName, name)
             pageName : pageName
         });
 
-        pageContent.save((err) => {
-            if (err) rej(err);
-            res(pageContent);
-        });
+        getPageContentPromise(name, pageName)
+        .then(content => {
+            if (content) rej({err: "Given content already exists"});
+
+            pageContent.save((err) => {
+                if (err) rej(err);
+                res(pageContent);
+            });
+        })
+        .catch(console.error);  
     });
 }
 

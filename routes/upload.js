@@ -28,15 +28,22 @@ router.post('/', upload.fields([{name: 'archive', maxCount: 1}]), (req, res) => 
     processArchive(archivePath)
     .then(
     (sub) => {
-        metadataStore.savePageContentPromise(
-            sub.pageContentDirectory, 
-            req.body.pageName, 
-            req.body.name)
-        .then(
-        (pageContent) => {
-            console.log(JSON.stringify(pageContent));
-            res.send(JSON.stringify(pageContent));          
-        })
+        if (sub.err) res.send(JSON.stringify(sub));
+        else {       
+            metadataStore.savePageContentPromise(
+                sub.pageContentDirectory, 
+                req.body.pageName, 
+                req.body.name)
+            .then(
+            (pageContent) => {
+                console.log(JSON.stringify(pageContent));
+                res.send(JSON.stringify(pageContent));          
+            })
+            .catch(err => {
+                if (err.err) res.send(JSON.stringify(err));
+                else console.error(err);
+            });
+        }
     }).catch(console.error);
 });
 
@@ -44,7 +51,11 @@ router.post('/page', (req, res) => {
     metadataStore.savePagePromise(req.body.name)
     .then(page => {
         res.send(JSON.stringify(page));
-    }).catch(console.error);
+    })
+    .catch(err => {
+        if (err.err) res.send(JSON.stringify(err));
+        else console.error(err);
+    });
 
 });
 
