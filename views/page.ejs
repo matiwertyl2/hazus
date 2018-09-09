@@ -88,12 +88,16 @@ function handleDrop(e) {
     addDnDHandlers(dropElem);
     
   }
+  else {
+      this.classList.remove('dragElem');
+  }
   this.classList.remove('over');
   return false;
 }
 
 function handleDragEnd(e) {
   // this/e.target is the source node.
+  this.classList.remove('dragElem');
   this.classList.remove('over');
 
   /*[].forEach.call(cols, function (col) {
